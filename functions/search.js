@@ -8,7 +8,9 @@ var sortResults = require('./sortResults.js');
 
 var R = 6371;
 
-function search(inputStr, lat, lng) {
+module.exports = function(inputStr, lat, lng) {
+
+  console.log("I'm searching");
 
   citiesFound = filterByName(inputStr, cities);
 
@@ -42,4 +44,4 @@ function search(inputStr, lat, lng) {
 
 }
 
-console.log(search('London', 43.70011, -79.4163));
+// console.log(search('London', 43.70011, -79.4163));
