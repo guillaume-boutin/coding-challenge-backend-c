@@ -14,8 +14,6 @@ module.exports = function(reqQuery) {
   var lat = reqQuery["latitude"];
   var lng = reqQuery["longitude"];
 
-  console.log("I'm searching");
-
   citiesFound = filterByName(inputStr, cities);
 
   var results = [];
@@ -44,7 +42,7 @@ module.exports = function(reqQuery) {
 
   });
 
-  return sortResults(results);
+  return sortResults(results, reqQuery);
 
 }
 

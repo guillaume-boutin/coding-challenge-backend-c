@@ -14,13 +14,23 @@ fs.readFile('./data/cities_canada-usa.tsv', 'utf-8', function(err, data) {
   headLine = linesArr[0]
   citiesArr = [];
 
-  for (i=1; i<linesArr.length; i++) {
+  for (i=1; i<linesArr.length-1; i++) {
     var lineObj = {};
+
     for (j=0; j<headLine.length; j++) {
-      lineObj[headLine[j]] = linesArr[i][j];
+
+      if (headLine[j] === "alt_name") {
+        lineObj[headLine[j]] = linesArr[i][j].split(',');
+      }
+      else {
+        lineObj[headLine[j]] = linesArr[i][j];
+      }
+
     }
     citiesArr.push(lineObj);
   }
+
+  console.log(citiesArr[2]);
 
   jsonfile.writeFile('./data/cities_canada-usa.json', citiesArr, function(err) {
     if (err) {

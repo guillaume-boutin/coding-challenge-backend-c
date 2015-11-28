@@ -13,11 +13,12 @@ app.get('/hello', function (req, res) {
 });
 
 app.get('/suggestions', function(req, res) {
-  // res.writeHead(404, {'Content-Type': 'text/plain'});
 
-  console.log(req.query);
+  console.log(search(req.query));
 
-  res.json(search( req.query ));
+  res.json({"suggestions": search( req.query )});
+
+  res.end();
 
 })
 
