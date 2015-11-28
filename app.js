@@ -14,7 +14,7 @@ app.get('/hello', function (req, res) {
 
 app.get('/suggestions', function(req, res) {
 
-  console.log(search(req.query));
+  // console.log(search(req.query));
 
   res.json({"suggestions": search( req.query )});
 
