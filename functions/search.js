@@ -8,7 +8,11 @@ var sortResults = require('./sortResults.js');
 
 var R = 6371;
 
-module.exports = function(inputStr, lat, lng) {
+module.exports = function(reqQuery) {
+
+  var inputStr = reqQuery["q"];
+  var lat = reqQuery["latitude"];
+  var lng = reqQuery["longitude"];
 
   console.log("I'm searching");
 

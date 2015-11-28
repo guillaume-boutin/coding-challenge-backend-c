@@ -17,7 +17,7 @@ app.get('/suggestions', function(req, res) {
 
   console.log(req.query);
 
-  res.json(search(req.query.q, Number(req.query.latitude), Number(req.query.longitude) ) );
+  res.json(search( req.query ));
 
 })
 
