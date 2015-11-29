@@ -42,7 +42,14 @@ module.exports = function(reqQuery) {
 
   });
 
-  return sortResults(results, reqQuery);
+  if (results.length === 0) {
+    return [];
+  }
+  else {
+    return sortResults(results, reqQuery);
+  }
+
+
 
 }
 

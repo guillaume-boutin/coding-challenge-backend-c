@@ -16,7 +16,14 @@ app.get('/suggestions', function(req, res) {
 
   // console.log(search(req.query));
 
-  res.json({"suggestions": search( req.query )});
+  var results = search( req.query );
+
+  if (results.length === 0) {
+    res.status(404).json({"suggestions": []});
+  }
+  else {
+    res.status(200).json({"suggestions": results});
+  }
 
   res.end();
 
