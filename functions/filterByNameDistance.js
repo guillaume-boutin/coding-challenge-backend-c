@@ -13,8 +13,6 @@ module.exports = function(reqQuery, cities) {
     fullRe = new RegExp('^'+inputStr, "i");
   }
 
-
-
   var re = new RegExp(inputStr, "i");
 
   var results = [];

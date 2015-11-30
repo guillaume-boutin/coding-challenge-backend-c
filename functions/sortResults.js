@@ -6,7 +6,7 @@ module.exports = function(results, reqQuery) {
   else {
     param = "score"
   }
-  if (reqQuery[param] === "asc") {
+  if (reqQuery["sort"+param] === "asc") {
     var order = "asc";
   }
   else {
