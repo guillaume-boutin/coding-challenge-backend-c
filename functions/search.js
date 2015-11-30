@@ -1,20 +1,42 @@
 var cities = require('../data/cities_canada-usa.json');
 var admin1ToProvince = require('./admin1ToProvince.js');
-var filterByName = require('./filterByName.js');
+var filterByNameDistance = require('./filterByNameDistance.js');
 var calculateDistance = require('./calculateDistance.js');
-var areaFactor = require('./areaFactor.js');
-var nameFactor = require('./nameFactor.js');
+var calculateScore = require('./calculateScore.js');
 var sortResults = require('./sortResults.js');
 
 var R = 6371;
 
 module.exports = function(reqQuery) {
 
-  var inputStr = reqQuery["q"];
-  var lat = reqQuery["latitude"];
-  var lng = reqQuery["longitude"];
+  if (reqQuery.hasOwnProperty("q")) {
+    var inputStr = reqQuery.q;
+  } else if (reqQuery.hasOwnProperty("begins")) {
+    inputStr = reqQuery.begins;
+  } else {
+    inputStr = reqQuery.ends;
+  }
 
-  citiesFound = filterByName(inputStr, cities);
+  if (reqQuery.hasOwnProperty("latitude")) {
+    var lat = reqQuery["latitude"];
+    var lng = reqQuery["longitude"];
+  }
+
+  if (reqQuery.hasOwnProperty("farther")) {
+    var farther = reqQuery.farther;
+  }
+  if (reqQuery.hasOwnProperty("closer")) {
+    var farther = reqQuery.closer;
+  }
+
+  if (reqQuery.hasOwnProperty("distance")) {
+    var sortDistance = reqQuery.distance;
+  }
+  if (reqQuery.hasOwnProperty("score")) {
+    var sortScore = reqQuery.score;
+  }
+
+  citiesFound = filterByNameDistance(reqQuery, cities);
 
   var results = [];
   citiesFound.forEach( function(city) {
@@ -28,17 +50,20 @@ module.exports = function(reqQuery) {
       state = city['admin1'];
     }
 
-    var distance = calculateDistance(lng, lat, Number(city["long"]), Number(city["lat"]));
-    var aFactor = areaFactor(distance);
-    var nFactor = nameFactor(inputStr, city["name"]);
-    var factor = Math.round( aFactor*nFactor*100)/100;
+    var score = calculateScore(reqQuery, city);
 
-    results.push({
+    var resultToPush = {
       "name": city["name"]+', '+state+', '+country,
       "latitude": city["lat"],
       "longitude": city["long"],
-      "score": factor
-    });
+      "score": score
+    }
+
+    if (city.hasOwnProperty("distance")) {
+      resultToPush["distance"] = Math.round(city["distance"]);
+    }
+
+    results.push(resultToPush);
 
   });
 

@@ -19,55 +19,36 @@ app.get('/suggestions', function(req, res) {
   var coordinates = [];
   var unknowns = [];
 
-  for (key in req.query) {
+  Object.keys(req.query).forEach( function(key) {
+
     if (key === "q" || key === "begins" || key === "ends") {
-      queries.push(req.query.key);
+      queries.push(req.query[key]);
     }
     else if (key === "farther" || key === "closer") {
-      distances.push(req.query.key);
+      distances.push(req.query[key]);
     }
-    else if (key === "distance" || key === "score") {
-      sortings.push(req.query.key);
+    else if (key === "sortdistance" || key === "sortscore") {
+      sortings.push(req.query[key]);
     }
     else if (key === "latitude" || key === "longitude") {
-      coordinates.push(req.query.key);
+      coordinates.push(req.query[key]);
     }
     else {
-      unknowns.push(req.query.key);
+      unknowns.push(req.query[key]);
     }
-  }
+  });
 
   if (queries.length === 0) {
-    message = "You must enter either q, begins or end as a name query.";
+    message = "You must enter either q, begins or end as a name match query.";
   }
-  else if (queries.length > 1) {
-    message = "You can only have one query for name."
+  if (queries.length > 1) {
+    message = "You can only have one query for name match.";
   }
-  else if (distances.length > 0) {
-    if (distances.length > 1) {
-      message = "Query cannot have closer and farther at the same time. Pick only one of them.";
-    }
-    else if (isNaN(req.query[distances[0]])) {
-      message = "closer or farther parameter must be a number";
-    }
-    else {
-      passed = true;
-    }
+  if (queries[0].length < 3) {
+    message = "Name match query must be at least 3 characters long";
   }
 
-  else if (sortings.length > 0) {
-    if (sortings.length > 1) {
-      message = "Cannot sort both distance and score at the same time.";
-    }
-    else if (req.query[sortings[0]] !== "asc" && req.query[sortings[0]] !== "desc") {
-      message = "distance or score can only have values asc or desc.";
-    }
-    else {
-      passed = true;
-    }
-  }
-
-  else if (coordinates.length > 0) {
+  if (coordinates.length > 0) {
     if ( coordinates.length !== 2) {
       message = "Both latitude and longitude are requires, or none of them."
     }
@@ -77,16 +58,40 @@ app.get('/suggestions', function(req, res) {
     else if (Number(req.query.longitude) > 180 || Number(req.query.longitude) < -180 || isNaN(req.query.longitude)) {
       message = "Longitude must be a number in between -180 and 180 inclusively";
     }
-    else {
-      passed = true;
+  }
+
+  if (distances.length > 0) {
+    if (coordinates.length === 0) {
+      message = "You cannot specify a distance without specifiying longitude and latitude coordinates."
+    }
+    else if (isNaN(distances[0])) {
+      message = "closer and farther parameter must be a number";
+    }
+    else if (distances[0] > 20050 || distances[1] > 20050) {
+      message = "Distance query is greater than Earth's half circumference."
     }
   }
 
+  if (sortings.length > 0) {
+    if (sortings.length > 1) {
+      message = "Cannot sort both distance and score at the same time.";
+    }
+    else if (req.query.hasOwnProperty("sortdistance") && coordinates.length === 0) {
+      message = "Cannot sort distance without having longitude and latitudes coordinates";
+    }
+    else if (sortings[0] !== "asc" && sortings[0] !== "desc") {
+      message = "sortdistance or sortscore can only have values asc or desc.";
+    }
+  }
+
+
+
+  if (message.length > 0) {
+    passed = false;
+  }
   else {
     passed = true;
   }
-
-  console.log(passed);
 
   if (!passed) {
     res.status(400).send("ERROR 400: "+message);
