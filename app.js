@@ -114,8 +114,8 @@ app.get('/suggestions', function(req, res) {
 
 var server = http.createServer(app);
 
-server.listen(port, '127.0.0.1');
+server.listen(port, function() {
+  console.log('Server running at http://127.0.0.1:%d/suggestions', port);
+});
 
 module.exports = server;
-
-console.log('Server running at http://127.0.0.1:%d/suggestions', port);
