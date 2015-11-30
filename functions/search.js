@@ -73,9 +73,5 @@ module.exports = function(reqQuery) {
   else {
     return sortResults(results, reqQuery);
   }
-
-
-
+  
 }
-
-// console.log(search('London', 43.70011, -79.4163));

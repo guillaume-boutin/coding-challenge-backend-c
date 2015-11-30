@@ -6,7 +6,7 @@ module.exports = function(results, reqQuery) {
   else {
     param = "score"
   }
-  if (reqQuery["sortdistance"] === "asc" || reqQuery["sortscore"] === "asc") {
+  if (reqQuery[param] === "asc") {
     var order = "asc";
   }
   else {
@@ -19,7 +19,7 @@ module.exports = function(results, reqQuery) {
 
     for (i=1; i<results.length; i++) {
 
-      for (j=sortedResults.length-1; j>=0; j--) {
+      for (j=0; j<sortedResults.length; j++) {
         if (Number(results[i][param]) <= Number(sortedResults[j][param])) {
           sortedResults.splice(j, 0, results[i]);
           break;
